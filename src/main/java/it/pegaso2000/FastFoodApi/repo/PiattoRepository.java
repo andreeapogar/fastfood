@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import it.pegaso2000.FastFoodApi.model.Piatto;
 
-public interface PiattoRepo extends JpaRepository<Piatto, Integer>{
+public interface PiattoRepository  extends JpaRepository<Piatto, Integer>{
 
 }
