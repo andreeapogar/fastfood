@@ -1,6 +1,7 @@
 package it.pegaso2000.FastFoodApi.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,25 +23,29 @@ public class ClienteServiceImplementation implements ClienteSevice {
 
 	@Override
 	public List<Cliente> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return crepo.findAll();
 	}
 
 	@Override
 	public Cliente findById(int id) {
-		// TODO Auto-generated method stub
+		Optional<Cliente> c= crepo.findById(id);
+		if(c.isPresent())return c.get();
 		return null;
 	}
 
 	@Override
 	public Cliente save(Cliente cliente) {
-		// TODO Auto-generated method stub
-		return null;
+		return crepo.save(cliente);
 	}
 
 	@Override
 	public boolean delete(int id) {
-		// TODO Auto-generated method stub
+		Optional<Cliente> c = crepo.findById(id);
+		if(c.isPresent()) {
+			crepo.deleteById(id);
+			return true;
+		}
 		return false;
 	}
 

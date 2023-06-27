@@ -1,6 +1,7 @@
 package it.pegaso2000.FastFoodApi.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,25 +22,30 @@ public class PiattoServiceImplementation implements PiattoService{
 
 	@Override
 	public List<Piatto> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return prepo.findAll();
 	}
 
 	@Override
 	public Piatto findById(int id) {
-		// TODO Auto-generated method stub
+		Optional<Piatto> p= prepo.findById(id);
+			if(p.isPresent()) return p.get();
 		return null;
 	}
 
 	@Override
 	public Piatto save(Piatto piatto) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return prepo.save(piatto);
 	}
 
 	@Override
 	public boolean delete(int id) {
-		// TODO Auto-generated method stub
+		Optional<Piatto> p= prepo.findById(id);
+		if(p.isPresent()) {
+			prepo.deleteById(id);
+			return true;
+		}
 		return false;
 	}
 
