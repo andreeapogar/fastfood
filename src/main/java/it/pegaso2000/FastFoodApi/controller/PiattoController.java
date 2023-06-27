@@ -6,16 +6,21 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.pegaso2000.FastFoodApi.dto.PiattoDto;
 import it.pegaso2000.FastFoodApi.model.Piatto;
 import it.pegaso2000.FastFoodApi.service.PiattoService;
 
-@RestController("api/piatto")
+@RestController 
+@RequestMapping("api/piatto")
 public class PiattoController {
 	private PiattoService service;
 
@@ -27,7 +32,7 @@ public class PiattoController {
 	}
 	
 	//metodi
-	@GetMapping("all")
+	@GetMapping("/all")
 	public ResponseEntity<List<PiattoDto>> all(){
 		List<Piatto> list =service.findAll();
 		List<PiattoDto> result = list.stream().map(piatto ->{
@@ -37,7 +42,7 @@ public class PiattoController {
 	}
 	
 	
-	@GetMapping("getById/{id}")
+	@GetMapping("/getById/{id}")
 	public ResponseEntity<PiattoDto>getById(@PathVariable int id){
 		Piatto p= service.findById(id);
 		
@@ -47,8 +52,30 @@ public class PiattoController {
 			
 	}
 	
+	@PostMapping("/save")
+	public ResponseEntity<PiattoDto>save(@RequestBody PiattoDto dto){
+		Piatto saving = dtoToEntity(dto);
+		Piatto saved = service.save(saving);
+		return new ResponseEntity<PiattoDto>(entityToDto(saved),HttpStatus.OK);
+	}
 	
-	
+
+	@PutMapping("/update/{id}")
+	public ResponseEntity<PiattoDto> update(@RequestBody PiattoDto updated,@PathVariable int id){
+		PiattoDto dto= entityToDto(service.findById(id));
+		if(dto!=null) {
+			updated.setId(id);
+			Piatto saving=service.save(dtoToEntity(updated));
+			return new ResponseEntity<PiattoDto>(entityToDto(saving),HttpStatus.OK);
+		}
+		return new ResponseEntity<PiattoDto>(HttpStatus.NO_CONTENT);
+	}
+	@DeleteMapping("/delete/{id}")
+	public boolean delete(@PathVariable int id) {
+		return service.delete(id);
+		
+	}
+		
 	private PiattoDto entityToDto (Piatto p) {
 		PiattoDto dto=new PiattoDto();
 		dto.setDescrizione(p.getDescrizione());
@@ -58,6 +85,15 @@ public class PiattoController {
 		return dto;
 	}
 	
+	private Piatto dtoToEntity(PiattoDto dto) {
+		Piatto p=new Piatto();
+		
+		p.setDescrizione(dto.getDescrizione());
+		p.setPrezzo(dto.getPrezzo());
+		p.setIs_vegetariano(dto.isIs_vegetariano());
+		return p;
+		
+	}
 	
 
 }
